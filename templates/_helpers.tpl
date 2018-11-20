@@ -30,3 +30,12 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $name := default "postgresql" .Values.postgresql.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" | b64enc -}}
 {{- end -}}
+
+{{- define "airflow.sql_alchemy_conn.secret" }}
+{{- $pgname := default "postgresql" .Values.postgresql.nameOverride -}}
+{{- $username := default "airflow" .Values.postgresql.postgresUser -}}
+{{- $password := default "airflow" .Values.postgresql.postgresPassword -}}
+{{- $db := default "airflow" .Values.postgresql.postgresDatabase -}}
+{{- $postgresql_conn := printf "postgresql+psycopg2://%s:%s@%s-%s:5432/%s" $username $password .Release.Name $pgname $db -}}
+{{- default $postgresql_conn .Values.sqlAlchemyConn | b64enc -}}
+{{- end -}}

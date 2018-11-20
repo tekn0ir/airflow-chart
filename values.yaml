@@ -6,6 +6,9 @@ imagePullPolicy: IfNotPresent
 
 fernetKey: af7CN0q6ag5U3g08IsPsw3K45U7Xa0axgVFhoh-3zB8=
 
+## To specify a separately provisioned backend database for Airflow use this:
+# sqlAlchemyConn: postgresql+psycopg2://username:password@db-hostname:5432/schema
+
 ## Specify ingress settings
 ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
@@ -62,6 +65,7 @@ provisioner:
 # AIRFLOW__KUBERNETES__AIRFLOW_CONFIGMAP
 # AIRFLOW__KUBERNETES__NAMESPACE
 # AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
+# AIRFLOW__CORE__SQL_ALCHEMY_CONN
 # here is an example of what else you want to configure
 config:
   # Other
@@ -71,7 +75,6 @@ config:
   AIRFLOW__CORE__DAGS_FOLDER: /usr/local/airflow/dags
   AIRFLOW__CORE__BASE_LOG_FOLDER: /usr/local/airflow/logs
   AIRFLOW__CORE__LOGGING_LEVEL: INFO
-  AIRFLOW__CORE__LOAD_EXAMPLES: "True"
   # Webserver
   AIRFLOW__WEBSERVER__BASE_URL: http://airflow.192.168.99.100.xip.io
   AIRFLOW__WEBSERVER__AUTHENTICATE: "False"
@@ -85,6 +88,7 @@ config:
 # AIRFLOW__KUBERNETES__AIRFLOW_CONFIGMAP
 # AIRFLOW__KUBERNETES__NAMESPACE
 # AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
+# AIRFLOW__CORE__SQL_ALCHEMY_CONN
 
 ########################################################################################################################
 ## Configuration values for the postgresql dependency.

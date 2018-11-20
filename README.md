@@ -12,6 +12,7 @@ configmap while a secret populate the configration file, that in turn creates en
 All of which is configurable from the values file.
 
 The chart automatically sets the following variables:
+AIRFLOW__CORE__SQL_ALCHEMY_CONN,
 AIRFLOW__KUBERNETES__AIRFLOW_CONFIGMAP,
 AIRFLOW__KUBERNETES__NAMESPACE
 and:
@@ -19,9 +20,11 @@ AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
 if rbac is enabled.
 
 ### Database backend
-If you want your own DB backend for Airflow, just disable postgresql in the values file and add a SQL_ALCHEMY_CONN variable
-to the configs section:
-SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-postgresql:5432/airflow
+If you want your own DB backend for Airflow, just disable postgresql in the values file and add the sqlAlchemyConn
+value in the values file:
+```
+sqlAlchemyConn: postgresql+psycopg2://username:password@db-hostname:5432/schema
+```
 
 ### Provision connections
 As the DB needs to be at least initialized, but also connections has to be provisioned to Ariflow. There is a provision
