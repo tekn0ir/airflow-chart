@@ -47,8 +47,8 @@ data:
     # configuration requirements.
     remote_logging = False
     remote_log_conn_id =
-    remote_base_log_folder = s3://mybucket/logs/
-    encrypt_s3_logs = False
+    remote_base_log_folder =
+    encrypt_s3_logs =
 
     # Logging level
     logging_level = INFO
@@ -581,6 +581,8 @@ data:
     worker_container_repository = tekn0ir/airflow-base
     worker_container_tag = latest
     worker_container_image_pull_policy = IfNotPresent
+    worker_container_contains_dags = True
+    worker_container_dag_path = /usr/local/airflow/dags
     worker_dags_folder = /usr/local/airflow/dags
 
     # If True (default), worker pods will be deleted upon termination

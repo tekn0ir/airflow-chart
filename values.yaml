@@ -1,7 +1,7 @@
 # Duplicate this file and put your customization here
 
 airflowImage: tekn0ir/airflow-docker
-airflowImageTag: 1.10.1rc2
+airflowImageTag: latest
 imagePullPolicy: IfNotPresent
 
 fernetKey: af7CN0q6ag5U3g08IsPsw3K45U7Xa0axgVFhoh-3zB8=
@@ -22,6 +22,8 @@ ingress:
   #    hosts:
   #      - airflow.192.168.99.100.xip.io
 
+## Specify service annotations
+## This example add prometheus metrics scrape that is available in the default docker image
 service:
   annotations:
     prometheus.io/scrape: "true"
@@ -42,7 +44,7 @@ scheduler:
 rbac:
   enabled: true
 
-## Prepare your environment
+## Prepare your environment, runs in its own pod when DB is up
 ## ref: https://airflow.apache.org/cli.html
 provisioner:
   enabled: true
