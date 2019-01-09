@@ -8,10 +8,6 @@ metadata:
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- if .Values.webserver.annotations }}
-  annotations:
-{{ toYaml .Values.webserver.annotations | indent 4 }}
-{{- end }}
 spec:
   replicas: {{ .Values.webserver.replicas }}
   strategy:
@@ -28,6 +24,11 @@ spec:
       labels:
         app: {{ template "airflow.name" . }}-webserver
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ template "airflow.config_checksum" . }}
+{{- if .Values.webserver.annotations }}
+{{ toYaml .Values.webserver.annotations | indent 8 }}
+{{- end }}
     spec:
 {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "airflow.name" . }}
@@ -69,10 +70,6 @@ metadata:
     chart: {{ template "airflow.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- if .Values.scheduler.annotations }}
-  annotations:
-{{ toYaml .Values.scheduler.annotations | indent 4 }}
-{{- end }}
 spec:
   replicas: 1
   selector:
@@ -84,6 +81,11 @@ spec:
       labels:
         app: {{ template "airflow.name" . }}-scheduler
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ template "airflow.config_checksum" . }}
+{{- if .Values.scheduler.annotations }}
+{{ toYaml .Values.scheduler.annotations | indent 8 }}
+{{- end }}
     spec:
 {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "airflow.name" . }}

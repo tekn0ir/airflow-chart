@@ -22,10 +22,13 @@ To force you not to end up in performance and/or other issues, this template tak
 
 ### Chain of configuration
 
-The chart might seem to have secrets and configmaps that isn´t used, and worker pods might seem to be missing mounts.
+Any airflow setting can be set by the scheme AIRFLOW__{SECTION}__{KEY} in the config section your values.yaml.
+Rollout is performed when running `helm updgrade` on config changes, due to a checksum annotation on the pods.
+
+The chart might seem to have secrets and configmaps that are not used, and worker pods might seem to be missing mounts.
 The configuration design of airflow is not straight forward. Webservers and scheduler gets config overloaded with a
 configmap, while a secret populate the configration file, that in turn creates environment variables for the workers(tasks).
-All of which is configurable from the values.yaml file.
+All of which is configurable from the values.yaml file in one single place.
 
 The chart automatically sets the following variables:
 ```

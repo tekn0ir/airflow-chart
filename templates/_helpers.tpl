@@ -39,3 +39,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $postgresql_conn := printf "postgresql+psycopg2://%s:%s@%s-%s:5432/%s" $username $password .Release.Name $pgname $db -}}
 {{- default $postgresql_conn .Values.sqlAlchemyConn | b64enc -}}
 {{- end -}}
+
+{/*
+Create a way of detecting configuration changes.
+Bu using a checksum of the rendered config value in a deployment annotaion, rollouts will be triggered when config is changed.
+*/}}
+{{- define "airflow.config_checksum" -}}
+{{- toJson .Values.config | sha256sum -}}
+{{- end -}}
