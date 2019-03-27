@@ -6,13 +6,10 @@ Helm chart for deploying Apache Airflow on kubernetes.
 Read more about Kubernetes Executor and Operator [here](https://airflow.incubator.apache.org/kubernetes.html).
 
 
-## Ealy bird
+## Stil moving around a bit...
 
-As Airflow kubernetes support is in its early stages there are still issues. There is no released version that is fully
-functional, so a build from 'master' is the latest docker image. And thus it is not version locked yet.
-
-There are also differences between version, ex 1.10.1rc2 has the BatchTaskRunner while the master build uses the
-StandardTaskRunner.
+This version is now updated to run with the released Airflow 1.10.2 and now back to running the BatchTaskRunner.
+It also now use the new RBAC frontend, and there is now also a provision user example in the values file.
 
 
 ## Guideance
@@ -71,6 +68,23 @@ provisioner:
 ```
 _this shows how to provision a AWS Redshift JDBS connection supported by the default docker image_
 
+### Provision users
+
+The provision job can also be used to provision users.
+```
+provisioner:
+  enabled: true
+  cmds: |-
+    airflow initdb;
+    airflow create_user \
+    --role Admin \
+    --username airflow \
+    --password airflow \
+    --firstname Air \
+    --lastname Flow \
+    --email air.flow@examle.com;
+```
+_this shows how to provision an admin user called `airflow` with password `airflow`_
 
 ### Worker logs
 
