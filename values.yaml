@@ -1,7 +1,7 @@
 # Duplicate this file and put your customization here
 
 airflowImage: tekn0ir/airflow-docker
-airflowImageTag: latest
+airflowImageTag: "1.10.2"
 imagePullPolicy: IfNotPresent
 
 fernetKey: af7CN0q6ag5U3g08IsPsw3K45U7Xa0axgVFhoh-3zB8=
@@ -58,6 +58,14 @@ provisioner:
     --conn_schema my_database \
     --conn_port 5439 \
     --conn_extra '{"extra__jdbc__drv_path": "/usr/local/ariflow/drivers/RedshiftJDBC42-no-awssdk-1.2.15.1025.jar", "extra__jdbc__drv_clsname": "com.amazon.redshift.jdbc42.Driver"}';
+    airflow create_user \
+    --role Admin \
+    --username airflow \
+    --password airflow \
+    --firstname Air \
+    --lastname Flow \
+    --email air.flow@examle.com;
+
 
 # Airflow configuration
 # https://airflow.apache.org/howto/set-config.html
@@ -79,14 +87,16 @@ config:
   AIRFLOW__CORE__LOGGING_LEVEL: INFO
   # Webserver
   AIRFLOW__WEBSERVER__BASE_URL: http://airflow.192.168.99.100.xip.io
-  AIRFLOW__WEBSERVER__AUTHENTICATE: "False"
+  AIRFLOW__WEBSERVER__AUTHENTICATE: "True"
   AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "True"
+  AIRFLOW__WEBSERVER__RBAC: "True"
   # Kubernetes
   AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: tekn0ir/airflow-docker
-  AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: 1.10.1rc2
+  AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: 1.10.2
   AIRFLOW__KUBERNETES__WORKER_CONTAINER_IMAGE_PULL_POLICY: IfNotPresent
   AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "True"
-# Rem,ember that the following will be automatically set by the chart!:
+  AIRFLOW__KUBERNETES__DAGS_IN_IMAGE: "True"
+# Remember that the following will be automatically set by the chart!:
 # AIRFLOW__KUBERNETES__AIRFLOW_CONFIGMAP
 # AIRFLOW__KUBERNETES__NAMESPACE
 # AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME
