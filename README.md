@@ -126,8 +126,8 @@ Edit: `worker_container_contains_dags = True` is set by default
 To install the chart with the release name `my-airflow` in the `my-airflow` namespace:
 
 ```
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm upgrade --install my-airflow --namespace=my-airflow incubator/airflow
+$ git clone https://github.com/tekn0ir/airflow-chart.git
+$ helm upgrade --install my-airflow --namespace=my-airflow airflow-chart
 ```
 
 This chart includes a postgresql chart as a dependency to the Airflow cluster in its `requirement.yaml` by default. 
@@ -160,7 +160,8 @@ Specify parameters using `--set key=value[,key=value]` argument to `helm install
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
 
 ```bash
-$ helm install --name my-airflow -f values.yaml incubator/airflow
+$ git clone https://github.com/tekn0ir/airflow-chart.git
+$ helm install --name my-airflow -f values.yaml airflow-chart
 ```
 
 
