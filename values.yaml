@@ -50,6 +50,7 @@ provisioner:
   enabled: true
   cmds: |-
     airflow initdb;
+    sleep(10);
     airflow connections --add --conn_id my_rs_connection \
     --conn_type jdbc \
     --conn_host jdbc:redshift://my-redshift.eu-west-1.redshift.amazonaws.com \
