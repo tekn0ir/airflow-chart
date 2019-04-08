@@ -127,7 +127,9 @@ To install the chart with the release name `my-airflow` in the `my-airflow` name
 
 ```
 $ git clone https://github.com/tekn0ir/airflow-chart.git
-$ helm upgrade --install my-airflow --namespace=my-airflow airflow-chart
+$ cd airflow-chart
+$ helm dependency update
+$ helm upgrade --install my-airflow --namespace=my-airflow .
 ```
 
 This chart includes a postgresql chart as a dependency to the Airflow cluster in its `requirement.yaml` by default. 
@@ -161,7 +163,9 @@ Alternatively a YAML file that specifies the values for the parameters can be pr
 
 ```bash
 $ git clone https://github.com/tekn0ir/airflow-chart.git
-$ helm install --name my-airflow -f values.yaml airflow-chart
+$ cd airflow-chart
+$ helm dependency update
+$ helm install --name my-airflow -f values.yaml .
 ```
 
 
