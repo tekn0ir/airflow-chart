@@ -6,12 +6,6 @@ Helm chart for deploying Apache Airflow on kubernetes.
 Read more about Kubernetes Executor and Operator [here](https://airflow.incubator.apache.org/kubernetes.html).
 
 
-## Stil moving around a bit...
-
-This version is now updated to run with the released Airflow 1.10.2 and now back to running the BatchTaskRunner.
-It also now use the new RBAC frontend, and there is now also a provision user example in the values file.
-
-
 ## Guideance
 
 To force you not to end up in performance and/or other issues, this template takes some experience into account.
@@ -126,10 +120,9 @@ Edit: `worker_container_contains_dags = True` is set by default
 To install the chart with the release name `my-airflow` in the `my-airflow` namespace:
 
 ```
-$ git clone https://github.com/tekn0ir/airflow-chart.git
-$ cd airflow-chart
-$ helm dependency update
-$ helm upgrade --install my-airflow --namespace=my-airflow .
+$ helm repo add - username <your_github_username> - password <your_github_token> tekn0ir-airflow 'https://raw.githubusercontent.com/tekn0ir/airflow-chart/master/'
+$ helm repo update
+$ helm upgrade --install my-airflow --namespace=my-airflow tekn0ir-airflow/airflow-chart
 ```
 
 This chart includes a postgresql chart as a dependency to the Airflow cluster in its `requirement.yaml` by default. 

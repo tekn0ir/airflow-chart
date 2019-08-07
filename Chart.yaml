@@ -1,6 +1,6 @@
-name: airflow
-version: 0.0.3
-appVersion: 1.10.2
+name: airflow-chart
+version: 0.0.4
+appVersion: 1.10.3
 description: Helm chart to deploy Airflow with K8s executors
 keywords:
   - airflow

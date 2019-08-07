@@ -105,6 +105,10 @@ data:
     # disconnects. Setting this to 0 disables retries.
     sql_alchemy_reconnect_timeout = 300
 
+    # The schema to use for the metadata database
+    # SqlAlchemy supports databases with the concept of multiple schemas.
+    sql_alchemy_schema =
+
     # The amount of parallelism as a setting to the executor. This defines
     # the max number of task instances that should run simultaneously
     # on this airflow installation
@@ -135,13 +139,13 @@ data:
     fernet_key = $FERNET_KEY
 
     # Whether to disable pickling dags
-    donot_pickle = True
+    donot_pickle = False
 
     # How long before timing out a python file import while filling the DagBag
     dagbag_import_timeout = 30
 
     # The class to use for running task instances in a subprocess
-    task_runner = BashTaskRunner
+    task_runner = StandardTaskRunner
 
     # If set, tasks without a `run_as_user` argument will be run with this user
     # Can be used to de-elevate a sudo user running Airflow when executing tasks
@@ -176,6 +180,10 @@ data:
 
     # Worker initialisation check to validate Metadata Database connection
     worker_precheck = False
+
+    # When discovering DAGs, ignore any files that don't contain the strings `DAG` and `airflow`.
+    dag_discovery_safe_mode = True
+
 
     [cli]
     # In what way should the cli access the API. The LocalClient will use the
@@ -316,6 +324,12 @@ data:
     # Enable werkzeug `ProxyFix` middleware
     enable_proxy_fix = False
 
+    # Set secure flag on session cookie
+    cookie_secure = False
+
+    # Set samesite policy on session cookie
+    cookie_samesite =
+
 
     [email]
     email_backend = airflow.utils.email.send_email_smtp
@@ -347,6 +361,14 @@ data:
     # a worker will take, so size up your workers based on the resources on
     # your worker box and the nature of your tasks
     worker_concurrency = 16
+
+    # The maximum and minimum concurrency that will be used when starting workers with the
+    # "airflow worker" command (always keep minimum processes, but grow to maximum if necessary).
+    # Note the value should be "max_concurrency,min_concurrency"
+    # Pick these numbers based on resources on worker box and the nature of the task.
+    # If autoscale option is available, worker_concurrency will be ignored.
+    # http://docs.celeryproject.org/en/latest/reference/celery.bin.worker.html#cmdoption-celery-worker-autoscale
+    # worker_autoscale = 16,12
 
     # When you start an airflow worker, airflow starts a tiny web server
     # subprocess to serve the workers local log files to the airflow main
@@ -387,6 +409,10 @@ data:
 
     # Default queue that tasks get assigned to and that worker listen on.
     default_queue = default
+
+    # How many processes CeleryExecutor uses to sync task state.
+    # 0 means to use max(1, number of cores - 1) processes.
+    sync_parallelism = 0
 
     # Import path for celery configuration options
     celery_config_options = airflow.config_templates.default_celery.DEFAULT_CELERY_CONFIG
@@ -511,6 +537,10 @@ data:
     cacert = /etc/ca/ldap_ca.crt
     search_scope = LEVEL
 
+    # This setting allows the use of LDAP servers that either return a
+    # broken schema, or do not return a schema.
+    ignore_malformed_schema = False
+
     [mesos]
     # Mesos master address which MesosExecutor will connect to.
     master = localhost:5050
@@ -579,12 +609,12 @@ data:
     worker_container_repository = tekn0ir/airflow-base
     worker_container_tag = latest
     worker_container_image_pull_policy = IfNotPresent
-    worker_container_contains_dags = True
-    worker_container_dag_path = /usr/local/airflow/dags
-    worker_dags_folder = /usr/local/airflow/dags
 
     # If True (default), worker pods will be deleted upon termination
     delete_worker_pods = True
+
+    # Number of Kubernetes Worker Pod creation calls per scheduler loop
+    worker_pods_creation_batch_size = 1
 
     # The Kubernetes namespace where airflow workers should be created. Defaults to `default`
     namespace = airflow
@@ -592,10 +622,14 @@ data:
     # The name of the Kubernetes ConfigMap Containing the Airflow Configuration (this file)
     airflow_configmap = airflow-config
 
+    # For docker image already contains DAGs, this is set to `True`, and the worker will search for dags in dags_folder,
+    # otherwise use git sync or dags volume claim to mount DAGs
+    dags_in_image = False
+
     # For either git sync or volume mounted DAGs, the worker will look in this subpath for DAGs
     dags_volume_subpath =
 
-    # For DAGs mounted via a volume claim (mutually exclusive with volume claim)
+    # For DAGs mounted via a volume claim (mutually exclusive with git-sync and host path)
     dags_volume_claim =
 
     # For volume mounted logs, the worker will look in this subpath for logs
@@ -612,21 +646,59 @@ data:
     # Useful in local environment, discouraged in production
     logs_volume_host =
 
+    # A list of configMapsRefs to envFrom. If more than one configMap is
+    # specified, provide a comma separated list: configmap_a,configmap_b
+    env_from_configmap_ref =
+
+    # A list of secretRefs to envFrom. If more than one secret is
+    # specified, provide a comma separated list: secret_a,secret_b
+    env_from_secret_ref =
+
     # Git credentials and repository for DAGs mounted via Git (mutually exclusive with volume claim)
     git_repo =
     git_branch =
+    git_subpath =
+    # Use git_user and git_password for user authentication or git_ssh_key_secret_name and git_ssh_key_secret_key
+    # for SSH authentication
     git_user =
     git_password =
-    git_subpath =
     git_sync_root = /git
     git_sync_dest = repo
     # Mount point of the volume if git-sync is being used.
     # i.e. {AIRFLOW_HOME}/dags
     git_dags_folder_mount_point =
 
+    # To get Git-sync SSH authentication set up follow this format
+    #
+    # airflow-secrets.yaml:
+    # ---
+    # apiVersion: v1
+    # kind: Secret
+    # metadata:
+    #   name: airflow-secrets
+    # data:
+    #   # key needs to be gitSshKey
+    #   gitSshKey: <base64_encoded_data>
+    # ---
+    # airflow-configmap.yaml:
+    # apiVersion: v1
+    # kind: ConfigMap
+    # metadata:
+    #   name: airflow-configmap
+    # data:
+    #   known_hosts: |
+    #       github.com ssh-rsa <...>
+    #   airflow.cfg: |
+    #       ...
+    #
+    # git_ssh_key_secret_name = airflow-secrets
+    # git_ssh_known_hosts_configmap_name = airflow-configmap
+    git_ssh_key_secret_name =
+    git_ssh_known_hosts_configmap_name =
+
     # For cloning DAGs from git repositories into volumes: https://github.com/kubernetes/git-sync
-    git_sync_container_repository = gcr.io/google-containers/git-sync-amd64
-    git_sync_container_tag = v2.0.5
+    git_sync_container_repository = k8s.gcr.io/git-sync
+    git_sync_container_tag = v3.1.1
     git_sync_init_container_name = git-sync-clone
 
     # The name of the Kubernetes service account to be associated with airflow workers, if any.
@@ -648,6 +720,12 @@ data:
     # It will raise an exception if called from a process not running in a kubernetes environment.
     in_cluster = True
 
+    # When running with in_cluster=False change the default cluster_context or config_file
+    # options to Kubernetes client. Leave blank these to use default behaviour like `kubectl` has.
+    # cluster_context =
+    # config_file =
+
+
     # Affinity configuration as a single line formatted JSON object.
     # See the affinity model for top-level key names (e.g. `nodeAffinity`, etc.):
     #   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#affinity-v1-core
@@ -658,10 +736,39 @@ data:
     #   https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#toleration-v1-core
     tolerations =
 
+    # Worker pods security context options
+    # See:
+    #   https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+
+    # Specifies the uid to run the first process of the worker pods containers as
+    run_as_user =
+
+    # Specifies a gid to associate with all containers in the worker pods
+    # if using a git_ssh_key_secret_name use an fs_group
+    # that allows for the key to be read, e.g. 65533
+    fs_group =
+
     [kubernetes_node_selectors]
     # The Key-value pairs to be given to worker pods.
     # The worker pods will be scheduled to the nodes of the specified key-value pairs.
     # Should be supplied in the format: key = value
+
+    [kubernetes_annotations]
+    # The Key-value annotations pairs to be given to worker pods.
+    # Should be supplied in the format: key = value
+
+    [kubernetes_environment_variables]
+    # The scheduler sets the following environment variables into your workers. You may define as
+    # many environment variables as needed and the kubernetes launcher will set them in the launched workers.
+    # Environment variables in this section are defined as follows
+    #     <environment_variable_key> = <environment_variable_value>
+    #
+    # For example if you wanted to set an environment variable with value `prod` and key
+    # `ENVIRONMENT` you would follow the following format:
+    #     ENVIRONMENT = prod
+    #
+    # Additionally you may override worker airflow settings with the AIRFLOW__<SECTION>__<KEY>
+    # formatting as supported by airflow normally.
 
     [kubernetes_secrets]
     # The scheduler mounts the following secrets into your workers as they are launched by the
