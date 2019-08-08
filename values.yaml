@@ -1,7 +1,7 @@
 # Duplicate this file and put your customization here
 
 airflowImage: tekn0ir/airflow-docker
-airflowImageTag: "1.10.3"
+airflowImageTag: "1.10.4"
 imagePullPolicy: IfNotPresent
 
 fernetKey: af7CN0q6ag5U3g08IsPsw3K45U7Xa0axgVFhoh-3zB8=
@@ -93,7 +93,7 @@ config:
   AIRFLOW__WEBSERVER__RBAC: "True"
   # Kubernetes
   AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: tekn0ir/airflow-docker
-  AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: 1.10.3
+  AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: 1.10.4
   AIRFLOW__KUBERNETES__WORKER_CONTAINER_IMAGE_PULL_POLICY: IfNotPresent
   AIRFLOW__KUBERNETES__DELETE_WORKER_PODS: "True"
   AIRFLOW__KUBERNETES__DAGS_IN_IMAGE: "True"

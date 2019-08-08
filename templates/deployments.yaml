@@ -3,6 +3,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "airflow.name" . }}-webserver
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "airflow.name" . }}-webserver
     chart: {{ template "airflow.chart" . }}
@@ -65,6 +66,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "airflow.name" . }}-scheduler
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "airflow.name" . }}-scheduler
     chart: {{ template "airflow.chart" . }}

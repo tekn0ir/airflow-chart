@@ -8,3 +8,10 @@
 out
 gen
 /*/*._
+
+#### Releases
+airflow-chart-*.tgz
+#### Repo index
+index.yaml
+#### Git
+.git

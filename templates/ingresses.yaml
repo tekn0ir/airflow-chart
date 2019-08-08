@@ -5,6 +5,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "airflow.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "airflow.name" . }}
     chart: {{ template "airflow.chart" . }}
