@@ -2,11 +2,12 @@ apiVersion: v1
 entries:
   airflow-chart:
   - appVersion: 1.10.4
-    created: "2019-08-07T21:40:22.719322+02:00"
+    created: "2019-08-08T08:00:53.56943+02:00"
     description: Helm chart to deploy Airflow with K8s executors
-    digest: da86f308ccf2901138443eb663519c1120ea26f0844b88c1bc16364a08d9266f
+    digest: c86e6dd300425ade6292a4314cbd871ebf8e27dc766eaf768d9a7ffc53e19ea0
     engine: gotpl
     home: https://airflow.apache.org/
+    icon: https://airflow.apache.org/_images/pin_large.png
     keywords:
     - airflow
     - apache
@@ -20,7 +21,7 @@ entries:
     - airflow-chart-0.0.5.tgz
     version: 0.0.5
   - appVersion: 1.10.3
-    created: "2019-08-07T21:40:22.711953+02:00"
+    created: "2019-08-08T08:00:53.567325+02:00"
     description: Helm chart to deploy Airflow with K8s executors
     digest: 7054adf52bcea9d3f7f630e912d59ea200ee6d3fc785d9c2970e3ecdacce6e64
     engine: gotpl
@@ -40,7 +41,7 @@ entries:
   postgresql:
   - apiVersion: v1
     appVersion: 11.3.0
-    created: "2019-08-07T21:40:22.720571+02:00"
+    created: "2019-08-08T08:00:53.571014+02:00"
     description: Chart for PostgreSQL, an object-relational database management system
       (ORDBMS) with an emphasis on extensibility and on standards-compliance.
     digest: 1660ed618c182272822d0d07aaec22be961fc714b071bd8c046a8f9ac01026a7
@@ -65,4 +66,4 @@ entries:
     urls:
     - charts/postgresql-5.3.0.tgz
     version: 5.3.0
-generated: "2019-08-07T21:40:22.705827+02:00"
+generated: "2019-08-08T08:00:53.558773+02:00"

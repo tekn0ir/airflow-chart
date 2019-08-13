@@ -44,6 +44,16 @@ spec:
         - name: webserver
           containerPort: 8080
         args: ["webserver"]
+        readinessProbe:
+          initialDelaySeconds: 15
+          failureThreshold: 1
+          httpGet:
+            path: /login/
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 3
+          timeoutSeconds: 3
         envFrom:
         - secretRef:
             name: {{ template "airflow.name" . }}-secrets
